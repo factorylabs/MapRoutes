@@ -14,7 +14,7 @@
 // object used as both a map annotation and annotation view
 @interface FMapRoute : MKAnnotationView <MKAnnotation> {
 	// points that make up the route. 
-	NSMutableArray* _points;
+	NSArray* _points;
 	
 	// computed span of the route
 	MKCoordinateSpan _span;
@@ -24,13 +24,15 @@
 	
 	// reference to the view that displays this route
 	FMapRouteLine *_line;
-	
-	// hit area
-	UIView *_hit;
 }
 
+// defines the region this route occupies
 @property (readonly) MKCoordinateRegion region;
-@property (nonatomic, readonly) NSMutableArray *points;
+
+// array filled with CLLocation objects to define the route
+@property (nonatomic, readonly) NSArray *points;
+
+// view that draws the line for the route
 @property (nonatomic, retain) FMapRouteLine *lineView;
 
 // initialize with an array of points representing the route. 
@@ -38,9 +40,6 @@
 
 // tells the route view to refresh
 - (void)mapRegionChanged:(MKMapView*)map;
-
-- (void)show;
-- (void)hide;
 
 // static utility method to start a line path and draw it within the context specified. 
 // this only plots the line, and you are left to apply stroke and fills to it.

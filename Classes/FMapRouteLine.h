@@ -11,14 +11,17 @@
 #import "FMapRoute.h"
 
 // object that draws a line for a FMapRoute
-@interface FMapRouteLine : MKAnnotationView {
+@interface FMapRouteLine : UIView {
 	MKMapView *_map;
 	FMapRoute *_route;
 	NSNumber *_thickness;
 	UIColor *_color;
 }
 
+// sets thickness of the line
 @property (nonatomic, retain) NSNumber *thickness;
+
+// sets the primary color of the line
 @property (nonatomic, retain) UIColor *color;
 
 - (id)initWithRoute:(FMapRoute*)route withMap:(MKMapView*)map;

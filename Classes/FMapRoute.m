@@ -19,8 +19,6 @@
 @end
 
 
-
-
 @implementation FMapRoute
 
 @synthesize coordinate = _center;
@@ -56,10 +54,10 @@
 #pragma mark Public API
 
 
-// override the hit test to only return the hit view
+// override the hit test to always return this object so we can touch events
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-	return _hit;
+	return self;
 }
 
 
@@ -67,17 +65,8 @@
 {
 	if((self = [super initWithFrame:frame]))
 	{
-//		[self setBackgroundColor:[UIColor colorWithRed:0.0 green:1.0 blue:0.0 alpha:.2]];
-		
-		// create hit area that moves to match the rect of the map.
-		_hit = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-//		[_hit setBackgroundColor:[UIColor colorWithRed:1.0 green:0.0 blue:1.0 alpha:.2]];
-//		[_hit setUserInteractionEnabled:YES];
-//		[_hit setMultipleTouchEnabled:YES];
-		[self addSubview:_hit];
-		
 		// store points
-		_points = [[NSMutableArray alloc] initWithArray:points];
+		_points = [[NSArray alloc] initWithArray:points];
 		
 		// determine a logical center point for this route based on the middle of the lat/lon extents.
 		double maxLat = -91;
@@ -116,10 +105,6 @@
 	origin = [map convertPoint:origin toView:self];
 	_line.frame = CGRectMake(origin.x, origin.y, map.frame.size.width, map.frame.size.height);
 	[_line setNeedsDisplay];
-	
-	// move the hit area to the current region
-	CGRect curRect = [map convertRegion:[map region] toRectToView:self];
-	[_hit setFrame:curRect];
 }
 
 
@@ -131,7 +116,6 @@
 	// retain and display view
 	_line = newLine;
 	[_line retain];
-	
 	[self addSubview:_line];
 }
 
@@ -145,22 +129,16 @@
 	return region;
 }
 
-
-- (void)show
+// override setter to only apply visibility to the line
+-(void)setHidden:(BOOL)isHidden
 {
-	[_line setHidden:NO];
-}
-
-- (void)hide
-{
-	[_line setHidden:YES];
+	[_line setHidden:isHidden];
 }
 
 - (void)dealloc
 {
 	[self killLineView];
 	[_points release];
-	[_hit release];
 	[super dealloc];
 }
 
@@ -185,21 +163,25 @@
 
 - (void)checkTouches:(NSSet*)touches
 {
+//	NSLog(@"checkToches:");
 	BOOL isHidden = ([touches count] >= 2 ) ? YES : NO;
-	if( isHidden ) [self hide];
-	else [self show];
+	if( isHidden ) [self setHidden:YES];
+	else [self setHidden:NO];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
 {
-	NSLog(@"touchesBegan");
+//	NSLog(@"touchesBegan");
 	[self checkTouches:[event allTouches]];
+	[super touchesBegan:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event 
 {
-	NSLog(@"touchesMoved");
+//	NSLog(@"touchesMoved");
+//	NSLog(@"moved. do we have touches? %i", [[event allTouches] count]);
 	[self checkTouches:[event allTouches]];
+	[super touchesMoved:touches withEvent:event];
 }
 
 

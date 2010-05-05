@@ -12,7 +12,11 @@
 @implementation FMapRouteDottedLine
 
 @synthesize dotColor = _dotColor;
+@synthesize dotDashes = _dotDashes;
+@synthesize dotPhase = _dotPhase;
 @synthesize lineColor = _lineColor;
+@synthesize lineCap = _lineCap;
+@synthesize lineJoin = _lineJoin;
 
 
 - (id)initWithRoute:(FMapRoute*)route withMap:(MKMapView*)map
@@ -21,12 +25,15 @@
 	{
 		[self setLineColor:[UIColor clearColor]];
 		[self setDotColor:[UIColor redColor]];
+		[self setDotDashes:[NSArray arrayWithObjects:[NSNumber numberWithInt:2], [NSNumber numberWithInt:7], nil]];
+		[self setDotPhase:[NSNumber numberWithInt:0]];
+		[self setLineJoin:kCGLineJoinBevel];
+		[self setLineCap:kCGLineCapSquare];
 	}
 	return self;
 }
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+// style the route
 - (void)drawRect:(CGRect)rect {
 	
 	// vars
@@ -42,8 +49,8 @@
 	[FMapRoute plotRoute:_route inContext:lineContext fromMap:_map inView:self];
 	CGContextSetLineWidth( lineContext, [_thickness floatValue]);
 	CGContextSetStrokeColorWithColor( lineContext, color.CGColor );
-	CGContextSetLineJoin( lineContext, kCGLineJoinRound );
-	CGContextSetLineCap( lineContext, kCGLineCapRound);
+	CGContextSetLineJoin( lineContext, _lineJoin );
+	CGContextSetLineCap( lineContext, _lineCap);
 	CGContextStrokePath( lineContext );
 	CGContextDrawLayerInRect( context, rect, lineLayer );
 	CGLayerRelease( lineLayer );
@@ -55,10 +62,19 @@
 	[FMapRoute plotRoute:_route inContext:lineContext fromMap:_map inView:self];
 	CGContextSetLineWidth( lineContext, [_thickness floatValue]);
 	CGContextSetStrokeColorWithColor( lineContext, color.CGColor );
-	float dashes[] = { 2.0, 7.0 };
-	CGContextSetLineDash( lineContext, 0.0, dashes, 2);
-	CGContextSetLineJoin( lineContext, kCGLineJoinRound );
-	CGContextSetLineCap( lineContext, kCGLineCapRound );
+	
+	// create array of dash values
+	NSUInteger count = [_dotDashes count];
+	float dashes[ count ];
+	for (int i = 0; i < count; i++) 
+	{
+		NSNumber *num = [_dotDashes objectAtIndex:i];
+		dashes[i] = [num floatValue];
+	}
+	
+	CGContextSetLineDash( lineContext, [_dotPhase floatValue], dashes, count);
+	CGContextSetLineJoin( lineContext, _lineJoin );
+	CGContextSetLineCap( lineContext, _lineCap );
 	CGContextStrokePath( lineContext );
 	CGContextDrawLayerInRect( context, rect, lineLayer );
 	CGLayerRelease( lineLayer );
@@ -66,6 +82,10 @@
 
 
 - (void)dealloc {
+	[_dotColor release];
+	[_dotDashes release];
+	[_dotPhase release];
+	[_lineColor release];
     [super dealloc];
 }
 

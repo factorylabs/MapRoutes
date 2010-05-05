@@ -22,17 +22,17 @@
 		_route = route;
 		
 		// init properties
+		[self setUserInteractionEnabled:NO];
 		[self setClipsToBounds:YES];
 		[self setBackgroundColor:[UIColor clearColor]];
-		[self setThickness:[NSNumber numberWithInt:2]];
+		[self setThickness:[NSNumber numberWithInt:3]];
 		[self setColor:[UIColor redColor]];
 	}
 	return self;
 }
 
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+// plot the path, and then apply styles to it
 - (void)drawRect:(CGRect)rect 
 {
 	CGContextRef context = UIGraphicsGetCurrentContext();

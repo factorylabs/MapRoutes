@@ -10,12 +10,6 @@
 #import "FMapRouteLine.h"
 #import "FMapRouteDottedLine.h"
 
-@interface MapRoutesViewController (Private)
-
-- (void)showRoutes;
-
-@end
-
 
 @implementation MapRoutesViewController
 
@@ -56,11 +50,17 @@
 	[_map addAnnotation:_route];
 
 	
+	/* uncomment to see a basic line style
+	FMapRouteLine *line = [[FMapRouteLine alloc] initWithRoute:_route withMap:_map];
+	[line setColor:[UIColor redColor]];
+	 */
+	
+	// add a dotted line 
 	FMapRouteDottedLine *line = [[FMapRouteDottedLine alloc] initWithRoute:_route withMap:_map];
-	[line setThickness:[NSNumber numberWithInt:10]];
-	[line setDotColor:[UIColor redColor]];
-	[line setLineColor:[UIColor whiteColor]];
+	
+	// assign the view that draws the line to the route
 	[_route setLineView:line];
+	
 	[line release];
 	
 	// center on the region
@@ -119,19 +119,8 @@
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
 	// tell the route the map has changed, and also tell it to show if it has been hidden
-	NSLog(@"regionDidChangeAnimated");
 	[_route mapRegionChanged:_map];
-	[_route show];
-	
-//	[NSTimer scheduledTimerWithTimeInterval:.1 target:self selector:@selector(showRoutes) userInfo:nil repeats:NO];
+	[_route setHidden:NO];
 }
-
-- (void) showRoutes
-{
-	NSLog(@"showRoutes");
-	[_route show];
-}
-
-
 
 @end
