@@ -1,6 +1,6 @@
--MapRoutes
+=MapRoutes
 
-MapRoutes is a set of Objective-C classes that simplifies drawing and placing routes in an MKMapView.
+MapRoutes is a set of Objective-C classes that simplifies drawing and placing routes in an MKMapView. MapRoutes is designed to work with iPhone OS 3.2 and higher.
 
 These classes provide a framework for easily adding routes and takes care of cropping, positioning, and toggling the route's visibility when zooming/panning.
 
