@@ -49,11 +49,6 @@ These classes provide a framework for easily adding routes and takes care of cro
 		[_map addAnnotation:_route];
 
 
-		/* uncomment to see a basic line style
-		FMapRouteLine *line = [[FMapRouteLine alloc] initWithRoute:_route withMap:_map];
-		[line setColor:[UIColor redColor]];
-		 */
-
 		// add a dotted line 
 		FMapRouteDottedLine *line = [[FMapRouteDottedLine alloc] initWithRoute:_route withMap:_map];
 
